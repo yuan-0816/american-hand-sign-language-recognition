@@ -1,3 +1,4 @@
 *.idea
-
+__pycache__/
 asl_dataset/
+point_datasets/
