@@ -101,7 +101,7 @@ if __name__ == '__main__':
     # print(data)
 
 
-    test()
+    # test()
     # show_datasets()
 
 
@@ -131,6 +131,13 @@ if __name__ == '__main__':
     # for random_point_data in random_point_datas:
     #     data = np.load(random_point_datas)
     #     print(data)
+
+    import string
+
+    # 生成包含 'a' 到 'z' 的字串的陣列
+    categorical = list(string.ascii_lowercase)
+
+    print(categorical)
 
 
 

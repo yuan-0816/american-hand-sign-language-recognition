@@ -2,7 +2,6 @@ import os
 import numpy as np
 import tensorflow as tf
 from sklearn.metrics import accuracy_score, confusion_matrix
-import matplotlib.pyplot as plt
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
@@ -38,17 +37,20 @@ def load_data(data_folder):
 
 
 
-
-
 if __name__=="__main__":
+
 
     # data_folder = 'point_datasets'
     # train_data, train_labels = load_data(data_folder)
     # np.save(file='./data/train_data.npy', arr=train_data)
     # np.save(file='./data/train_labels.npy', arr=train_labels)
+
+
+
     train_data = np.load('./data/train_data.npy')
     train_labels = np.load('./data/train_labels.npy')
     train_labels = to_categorical(train_labels, num_classes=36)
+
     # train_labels->one hot
     # idx = np.random.permutation(len(data))
     # x, y = data[idx], classes[idx]
