@@ -135,7 +135,7 @@ def main():
     path = "asl_dataset"
     # show_origin_data_image(path)
     img_paths, _ = gets_datasets_path(path)
-    type = 8
+    type = 16
     # get_hand_points(img_paths[5])
 
     plt.subplot(2, 3, 1)
@@ -157,11 +157,9 @@ def main():
     plt.imshow(draw_point(processed_border_image(img_paths[type])))
     plt.title(f"origin image point", fontsize='small')
     plt.axis("off")
-
-
-
-
     plt.show()
+
+
 
 
 
