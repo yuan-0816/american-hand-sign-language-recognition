@@ -27,7 +27,7 @@ hands = mp_hands.Hands(min_detection_confidence=0.5, min_tracking_confidence=0.5
 class show_image_data():
     def __init__(self, path="asl_dataset"):
         self.path = path
-        self.sample_path = []
+        self.sample_path, self.subfolders = self.gets_datasets_path()
 
     def gets_datasets_path(self):
         paths = []
@@ -39,17 +39,15 @@ class show_image_data():
                 random_file = np.random.choice(files)
                 file_path = os.path.join(folder_path, random_file)
                 paths.append(file_path)
-                self.sample_path.append(file_path)
         return paths, subfolders
 
     def show_all_image_and_label(self, figsize=(10, 8), save_path=None):
-        datasets, subfolders = self.gets_datasets_path()
         plt.figure(figsize=figsize)
-        for i in range(len(datasets)):
-            img = plt.imread(datasets[i])
+        for i in range(len(self.sample_path)):
+            img = plt.imread(self.sample_path[i])
             plt.subplot(6, 6, i + 1)
             plt.imshow(img)
-            plt.title(f"Image of {subfolders[i]}", fontsize='small')
+            plt.title(f"Image of {self.subfolders[i]}", fontsize='small')
             plt.axis("off")
 
         if save_path:
@@ -58,8 +56,8 @@ class show_image_data():
         plt.show()
 
 # TODO　圖片資料集顯示
-    def processed_border_image(self, type=16):
-        img = cv2.imread(self.sample_path[type])
+    def processed_border_image(self, type=0):
+        img = plt.imread(self.sample_path[type])
         border_size = 100
         img = cv2.copyMakeBorder(
             img,
@@ -70,7 +68,8 @@ class show_image_data():
             borderType=cv2.BORDER_CONSTANT,
             value=[0, 0, 0]
         )
-        return img
+        plt.imshow(img)
+        plt.show()
 
 
 
@@ -186,6 +185,6 @@ def main():
 
 if __name__ == '__main__':
     result = show_image_data()
-    # result.show_all_image_and_label()
+    result.show_all_image_and_label()
     result.processed_border_image()
     # main()
