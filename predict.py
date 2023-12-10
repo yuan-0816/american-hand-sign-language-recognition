@@ -1,55 +1,29 @@
 import tensorflow as tf
 import numpy as np
-import os
 import cv2
 import mediapipe as mp
+import drawing_style as ds
 
 
 mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(min_detection_confidence=0.5, min_tracking_confidence=0.5)
+mp_drawing = mp.solutions.drawing_utils
+hands = mp_hands.Hands(
+    max_num_hands=1,
+    min_detection_confidence=0.5,
+    min_tracking_confidence=0.5)
 
-categorical = ['0',
-               '1',
-               '2',
-               '3',
-               '4',
-               '5',
-               '6',
-               '7',
-               '8',
-               '9',
-               'a',
-               'b',
-               'c',
-               'd',
-               'e',
-               'f',
-               'g',
-               'h',
-               'i',
-               'j',
-               'k',
-               'l',
-               'm',
-               'n',
-               'o',
-               'p',
-               'q',
-               'r',
-               's',
-               't',
-               'u',
-               'v',
-               'w',
-               'x',
-               'y',
-               'z']
-
-
+categorical = ['0', '1', '2', '3', '4', '5',
+               '6', '7', '8', '9', 'a', 'b',
+               'c', 'd', 'e', 'f', 'g', 'h',
+               'i', 'j', 'k', 'l', 'm', 'n',
+               'o', 'p', 'q', 'r', 's', 't',
+               'u', 'v', 'w', 'x', 'y', 'z']
 
 def get_hand_points(img):
-    results = hands.process(img)
+
     points = []
+    results = hands.process(img)
+
     if results.multi_hand_landmarks:
         for hand_landmarks in results.multi_hand_landmarks:
             for i in range(21):
@@ -57,6 +31,14 @@ def get_hand_points(img):
                 y = hand_landmarks.landmark[i].y
                 z = hand_landmarks.landmark[i].z
                 points.append([x, y, z])
+
+            mp_drawing.draw_landmarks(
+                img,
+                hand_landmarks,
+                mp_hands.HAND_CONNECTIONS,
+                ds.get_default_hand_landmarks_style(),
+                ds.get_default_hand_connections_style()
+            )
     else:
         points = None
 
@@ -70,9 +52,8 @@ def get_hand_points(img):
 
         points = np.array(points)
 
-
-    points_raw = points
     # 標準化
+    points_raw = points
     if points_raw is not None:
         min_x = np.min(points_raw[:, 0])
         max_x = np.max(points_raw[:, 0])
@@ -82,17 +63,12 @@ def get_hand_points(img):
             points_raw[i][0] = (points_raw[i][0] - min_x) / (max_x - min_x)
             points_raw[i][1] = (points_raw[i][1] - min_y) / (max_y - min_y)
 
-
-    return points_raw
-
-
-
+    return points_raw, img
 
 
 
 if __name__ == '__main__':
     model = tf.keras.models.load_model('model/best.h5py')
-    model.summary()
 
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
@@ -105,19 +81,24 @@ if __name__ == '__main__':
             print("Can't receive frame (stream end?). Exiting ...")
             break
 
-        point = get_hand_points(frame)
+        point, draw_img = get_hand_points(frame)
+        draw_img = cv2.flip(draw_img, 1)
 
         if point is not None:
             point = np.expand_dims(point, axis=0)
             # print(point.shape)
-
             predictions = model.predict(point)
             predicted_labels = np.argmax(predictions, axis=1)
-            cv2.putText(frame, str(categorical[predicted_labels[0]]), (10, 130),
-                        2, 5, (255, 0, 0), thickness=2)
+            cv2.putText(
+                img=draw_img,
+                text=str(categorical[predicted_labels[0]]),
+                org=(10, 130),
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=3,
+                color=(255, 0, 0),
+                thickness=5)
 
-
-        cv2.imshow("", frame)
+        cv2.imshow("", draw_img)
 
         if cv2.waitKey(1) == ord('q'):
             break
@@ -127,24 +108,20 @@ if __name__ == '__main__':
 
 
 
-
-
-
+    # 讀取資料集預測
     # dataset_root = "./point_datasets"
-    # # 获取所有子文件夹的名称
+    #
     # subfolders = [f for f in os.listdir(dataset_root) if os.path.isdir(os.path.join(dataset_root, f))]
     #
-    # # 从每个子文件夹中随机选择一个.npy文件
     # for subfolder in subfolders:
     #     folder_path = os.path.join(dataset_root, subfolder)
     #     files = [f for f in os.listdir(folder_path) if f.endswith(".npy")]
     #
     #     if files:
-    #         # 随机选择一个文件
+    #
     #         random_file = np.random.choice(files)
     #         file_path = os.path.join(folder_path, random_file)
     #
-    #         # 使用 np.load 读取数据
     #         data = np.load(file_path)
     #         adjusted_data = np.expand_dims(data, axis=0)
     #
