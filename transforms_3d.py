@@ -1,3 +1,15 @@
+"""
+　　    　　 ＿＿＿
+　　　　　／＞　　  フ
+　　　　　|  　_　 _|
+　 　　　／` ミ＿xノ
+　　 　 /　　　 　 |
+　　　 /　 ヽ　　 ﾉ
+　 　 │　　|　|　|
+　／￣|　　 |　|　|
+　| (￣ヽ＿_ヽ_)__)
+　＼二つ
+"""
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
@@ -57,9 +69,3 @@ class Scale:
             return np.array(scale_points)
 
         return x
-
-
-
-
-
-

@@ -1,120 +1,117 @@
+"""
+　　    　　 ＿＿＿
+　　　　　／＞　　  フ
+　　　　　|  　_　 _|
+　 　　　／` ミ＿xノ
+　　 　 /　　　 　 |
+　　　 /　 ヽ　　 ﾉ
+　 　 │　　|　|　|
+　／￣|　　 |　|　|
+　| (￣ヽ＿_ヽ_)__)
+　＼二つ
+"""
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, confusion_matrix
 import tensorflow as tf
 import os
 import numpy as np
 import pandas as pd
-from tensorflow.keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 
 
-def load_data(data_folder):
-    data = []
-    labels = []
+class ShowResult:
+    def __init__(self, model_path='model/best.h5py'):
+        self.model_path = model_path
+        self.point_net_model = tf.keras.models.load_model(self.model_path)
+        # self.point_net_model.summary()
 
-    # 創建標籤映射
-    label_mapping = {str(i): i for i in range(10)}  # 數字標籤映射
-    label_mapping.update({chr(ord('a') + i): i + 10 for i in range(26)})  # 字母標籤映射
+    def model_sumery(self):
+        self.point_net_model.summary()
 
-    for label in os.listdir(data_folder):
-        label_path = os.path.join(data_folder, label)
-        if os.path.isdir(label_path):
-            # 讀取資料夾中的所有 npy 檔案
-            for file_name in os.listdir(label_path):
-                file_path = os.path.join(label_path, file_name)
-                if file_name.endswith(".npy"):
-                    # 讀取 npy 檔案
-                    npy_data = np.load(file_path)
-                    # 加入資料和對應的標籤
-                    data.append(npy_data)
-                    labels.append(label_mapping[label])
+    def show_training_history(self, path, save_path=None):
+        try:
+            if not os.path.exists(path):
+                raise FileNotFoundError(f"The training history '{path}' does not exist!")
+        except FileNotFoundError as e:
+            print(f"Error: {e}")
+        else:
+            if not os.path.exists('result'):
+                os.makedirs('result')
+            history_df = pd.read_csv(path)
 
-    # 轉換為 NumPy 陣列
-    data = np.array(data)
-    labels = np.array(labels)
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
 
-    return data, labels
+            ax1.plot(history_df['loss'], label='Training Loss')
+            ax1.plot(history_df['val_loss'], label='Validation Loss')
+            ax1.set_title('Training and Validation Loss')
+            ax1.set_xlabel('Epoch')
+            ax1.set_ylabel('Loss')
+            ax1.grid(True)
+            ax1.legend()
 
+            ax2.plot(history_df['accuracy'], label='Training Accuracy')
+            ax2.plot(history_df['val_accuracy'], label='Validation Accuracy')
+            ax2.set_title('Training and Validation Accuracy')
+            ax2.set_xlabel('Epoch')
+            ax2.set_ylabel('Accuracy')
+            ax2.grid(True)
+            ax2.legend()
 
-def show_training_history(path):
+            plt.tight_layout()
 
-    try:
-        if not os.path.exists(path):
-            raise FileNotFoundError(f"The training history '{path}' does not exist!")
-    except FileNotFoundError as e:
-        print(f"Error: {e}")
-    else:
+            if save_path:
+                plt.savefig(save_path)
+            plt.show()
 
-        history_df = pd.read_csv(path)
-
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
-
-        ax1.plot(history_df['loss'], label='Training Loss')
-        ax1.plot(history_df['val_loss'], label='Validation Loss')
-        ax1.set_title('Training and Validation Loss')
-        ax1.set_xlabel('Epoch')
-        ax1.set_ylabel('Loss')
-        ax1.legend()
-
-        ax2.plot(history_df['accuracy'], label='Training Accuracy')
-        ax2.plot(history_df['val_accuracy'], label='Validation Accuracy')
-        ax2.set_title('Training and Validation Accuracy')
-        ax2.set_xlabel('Epoch')
-        ax2.set_ylabel('Accuracy')
-        ax2.legend()
-
-        plt.tight_layout()
-
-        plt.show()
-
-
-
-if __name__ == '__main__':
-
-    show_training_history('training_history/training_history.csv')
-
-
-    point_data_folder_path = 'point_datasets'
-    try:
-        if not os.path.exists(point_data_folder_path):
-            raise FileNotFoundError(f"The folder '{point_data_folder_path}' does not exist!")
-    except FileNotFoundError as e:
-        print(f"Error: {e}")
-
-    train_data_path = './data/train_data.npy'
-    train_labels_path = './data/train_labels.npy'
-    try:
-        if not (os.path.isfile(train_data_path) and os.path.isfile(train_labels_path)):
-            train_data, train_labels = load_data(point_data_folder_path)
-            np.save(file=train_data_path, arr=train_data)
-            np.save(file=train_labels_path, arr=train_labels)
-    except:
-        pass
-    else:
-        point_net_model = tf.keras.models.load_model('model/best.h5py')
+    def show_confusion_matrix(self,  figsize=(10, 8), save_path=None):
+        if not os.path.exists('result'):
+            os.makedirs('result')
         train_data = np.load('./data/train_data.npy')
         train_labels = np.load('./data/train_labels.npy')
-        test_labels_encoded = np.argmax(train_labels, axis=1)  # 將 one-hot 編碼轉換為未編碼
 
-        # 進行預測
-        predictions = point_net_model.predict(test_data)
+        tf.random.set_seed(42)
+
+        train_data, test_data, train_labels, test_labels = train_test_split(
+            train_data,
+            train_labels,
+            test_size=0.2,
+            random_state=42)
+
+        predictions = self.point_net_model.predict(test_data)
         predicted_labels = np.argmax(predictions, axis=1)
 
         # 計算準確率
-        accuracy = accuracy_score(test_labels_encoded, predicted_labels)
+        accuracy = accuracy_score(test_labels, predicted_labels)
         print(f'Accuracy: {accuracy}')
 
         # 繪製混淆矩陣
-        confusion_mat = confusion_matrix(test_labels_encoded, predicted_labels)
+        confusion_mat = confusion_matrix(test_labels, predicted_labels)
+
+        # Set the figure size
+        plt.figure(figsize=figsize)
+
         plt.imshow(confusion_mat, interpolation='nearest', cmap=plt.cm.Blues)
-        plt.title('Confusion Matrix')
+        plt.title(f'Confusion Matrix and Accuracy: {accuracy:.4f}')
         plt.colorbar()
 
-        classes = [str(i) for i in range(36)]  # 假設有 36 類
+        classes = [str(i) for i in range(36)]
         tick_marks = np.arange(len(classes))
         plt.xticks(tick_marks, classes, rotation=45)
         plt.yticks(tick_marks, classes)
 
         plt.xlabel('Predicted Labels')
         plt.ylabel('True Labels')
+
+        if save_path:
+            plt.savefig(save_path)
         plt.show()
+
+
+if __name__ == '__main__':
+    model_path = 'model/ASL_Recognition.h5py'
+    result = ShowResult(model_path)
+    result.model_sumery()
+    result.show_training_history('training_history/training_history.csv',
+                                 save_path='result/training_history.png')
+    result.show_confusion_matrix(figsize=(10, 8),
+                                 save_path='result/confusion_matrix.png')

@@ -1,9 +1,21 @@
+"""
+　　    　　 ＿＿＿
+　　　　　／＞　　  フ
+　　　　　|  　_　 _|
+　 　　　／` ミ＿xノ
+　　 　 /　　　 　 |
+　　　 /　 ヽ　　 ﾉ
+　 　 │　　|　|　|
+　／￣|　　 |　|　|
+　| (￣ヽ＿_ヽ_)__)
+　＼二つ
+"""
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 import os
-from transforms_3d import Scale, Rotate, GaussianNoise
 import mediapipe as mp
+import random
 
 
 mp_hands = mp.solutions.hands
@@ -12,45 +24,55 @@ mp_drawing_styles = mp.solutions.drawing_styles
 hands = mp_hands.Hands(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
 
-def gets_datasets_path(dataset_root):
-    paths = []
-    subfolders = [f for f in os.listdir(dataset_root) if os.path.isdir(os.path.join(dataset_root, f))]
-    for subfolder in subfolders:
-        folder_path = os.path.join(dataset_root, subfolder)
-        files = [f for f in os.listdir(folder_path) if f.endswith(".jpeg")]
-        if files:
+class show_image_data():
+    def __init__(self, path="asl_dataset"):
+        self.path = path
+        self.sample_path = []
 
-            random_file = np.random.choice(files)
-            file_path = os.path.join(folder_path, random_file)
-            paths.append(file_path)
-    return paths, subfolders
+    def gets_datasets_path(self):
+        paths = []
+        subfolders = [f for f in os.listdir(self.path) if os.path.isdir(os.path.join(self.path, f))]
+        for subfolder in subfolders:
+            folder_path = os.path.join(self.path, subfolder)
+            files = [f for f in os.listdir(folder_path) if f.endswith(".jpeg")]
+            if files:
+                random_file = np.random.choice(files)
+                file_path = os.path.join(folder_path, random_file)
+                paths.append(file_path)
+                self.sample_path.append(file_path)
+        return paths, subfolders
+
+    def show_all_image_and_label(self, figsize=(10, 8), save_path=None):
+        datasets, subfolders = self.gets_datasets_path()
+        plt.figure(figsize=figsize)
+        for i in range(len(datasets)):
+            img = plt.imread(datasets[i])
+            plt.subplot(6, 6, i + 1)
+            plt.imshow(img)
+            plt.title(f"Image of {subfolders[i]}", fontsize='small')
+            plt.axis("off")
+
+        if save_path:
+            plt.savefig(save_path)
+
+        plt.show()
+
+# TODO　圖片資料集顯示
+    def processed_border_image(self, type=16):
+        img = cv2.imread(self.sample_path[type])
+        border_size = 100
+        img = cv2.copyMakeBorder(
+            img,
+            top=border_size,
+            bottom=border_size,
+            left=border_size,
+            right=border_size,
+            borderType=cv2.BORDER_CONSTANT,
+            value=[0, 0, 0]
+        )
+        return img
 
 
-def show_origin_data_image(root):
-    datasets, subfolders = gets_datasets_path(root)
-    plt.figure(figsize=(8, 8))
-    for i in range(len(datasets)):
-        img = plt.imread(datasets[i])
-        plt.subplot(6, 6, i + 1)
-        plt.imshow(img)
-        plt.title(f"Image of {subfolders[i]}", fontsize='small')
-        plt.axis("off")
-    plt.show()
-
-
-def processed_border_image(root):
-    img = cv2.imread(root)
-    border_size = 100
-    img = cv2.copyMakeBorder(
-        img,
-        top=border_size,
-        bottom=border_size,
-        left=border_size,
-        right=border_size,
-        borderType=cv2.BORDER_CONSTANT,
-        value=[0, 0, 0]
-    )
-    return img
 
 
 
@@ -133,7 +155,6 @@ def draw_point(root):
 
 def main():
     path = "asl_dataset"
-    # show_origin_data_image(path)
     img_paths, _ = gets_datasets_path(path)
     type = 16
     # get_hand_points(img_paths[5])
@@ -164,4 +185,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    result = show_image_data()
+    # result.show_all_image_and_label()
+    result.processed_border_image()
+    # main()

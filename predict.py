@@ -1,3 +1,15 @@
+"""
+　　    　　 ＿＿＿
+　　　　　／＞　　  フ
+　　　　　|  　_　 _|
+　 　　　／` ミ＿xノ
+　　 　 /　　　 　 |
+　　　 /　 ヽ　　 ﾉ
+　 　 │　　|　|　|
+　／￣|　　 |　|　|
+　| (￣ヽ＿_ヽ_)__)
+　＼二つ
+"""
 import tensorflow as tf
 import numpy as np
 import cv2
@@ -68,43 +80,46 @@ def get_hand_points(img):
 
 
 if __name__ == '__main__':
-    model = tf.keras.models.load_model('model/ASL_Recognition.h5py')
+    try:
+        model = tf.keras.models.load_model('model/ASL_Recognition.h5py')
+    except:
+        print(f'model does not exist!')
+    else:
+        cap = cv2.VideoCapture(0)
+        if not cap.isOpened():
+            print("Cannot open camera")
+            exit()
 
-    cap = cv2.VideoCapture(0)
-    if not cap.isOpened():
-        print("Cannot open camera")
-        exit()
+        while (True):
+            ret, frame = cap.read()
+            if not ret:
+                print("Can't receive frame (stream end?). Exiting ...")
+                break
 
-    while (True):
-        ret, frame = cap.read()
-        if not ret:
-            print("Can't receive frame (stream end?). Exiting ...")
-            break
+            point, draw_img = get_hand_points(frame)
+            draw_img = cv2.flip(draw_img, 1)
 
-        point, draw_img = get_hand_points(frame)
-        draw_img = cv2.flip(draw_img, 1)
+            if point is not None:
+                point = np.expand_dims(point, axis=0)
+                # print(point.shape)
+                predictions = model.predict(point)
+                predicted_labels = np.argmax(predictions, axis=1)
+                cv2.putText(
+                    img=draw_img,
+                    text=str(categorical[predicted_labels[0]]),
+                    org=(10, 130),
+                    fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=3,
+                    color=(255, 0, 0),
+                    thickness=5)
 
-        if point is not None:
-            point = np.expand_dims(point, axis=0)
-            # print(point.shape)
-            predictions = model.predict(point)
-            predicted_labels = np.argmax(predictions, axis=1)
-            cv2.putText(
-                img=draw_img,
-                text=str(categorical[predicted_labels[0]]),
-                org=(10, 130),
-                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                fontScale=3,
-                color=(255, 0, 0),
-                thickness=5)
+            cv2.imshow("", draw_img)
 
-        cv2.imshow("", draw_img)
+            if cv2.waitKey(1) == ord('q'):
+                break
 
-        if cv2.waitKey(1) == ord('q'):
-            break
-
-    cap.release()
-    cv2.destroyAllWindows()
+        cap.release()
+        cv2.destroyAllWindows()
 
 
 

@@ -1,3 +1,15 @@
+"""
+　　    　　 ＿＿＿
+　　　　　／＞　　  フ
+　　　　　|  　_　 _|
+　 　　　／` ミ＿xノ
+　　 　 /　　　 　 |
+　　　 /　 ヽ　　 ﾉ
+　 　 │　　|　|　|
+　／￣|　　 |　|　|
+　| (￣ヽ＿_ヽ_)__)
+　＼二つ
+"""
 import tensorflow as tf
 from tensorflow.keras import layers, Model
 

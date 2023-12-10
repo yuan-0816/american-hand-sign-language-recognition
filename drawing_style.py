@@ -1,8 +1,19 @@
+"""
+　　    　　 ＿＿＿
+　　　　　／＞　　  フ
+　　　　　|  　_　 _|
+　 　　　／` ミ＿xノ
+　　 　 /　　　 　 |
+　　　 /　 ヽ　　 ﾉ
+　 　 │　　|　|　|
+　／￣|　　 |　|　|
+　| (￣ヽ＿_ヽ_)__)
+　＼二つ
+"""
 from mediapipe.python.solutions.drawing_utils import DrawingSpec
 from mediapipe.python.solutions.hands import HandLandmark
 from mediapipe.python.solutions import hands_connections
 from typing import Mapping, Tuple
-
 
 
 _RADIUS = 3
