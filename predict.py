@@ -68,7 +68,7 @@ def get_hand_points(img):
 
 
 if __name__ == '__main__':
-    model = tf.keras.models.load_model('model/best.h5py')
+    model = tf.keras.models.load_model('model/ASL_Recognition.h5py')
 
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
