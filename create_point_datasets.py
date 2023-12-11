@@ -132,8 +132,8 @@ def create(name, root, label, dest_path, augmentations):
 def main():
 
     count = 0
-    path = "asl_dataset"
-    destination_path = "point_datasets"
+    path = "datasets/asl_dataset"
+    destination_path = "datasets/point_datasets"
     augmentations = ["rot", "scale", "noise"]
     jpg_files = glob.glob(os.path.join(path, '**/*.jp*'), recursive=True)
     png_files = glob.glob(os.path.join(path, '**/*.png'), recursive=True)

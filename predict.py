@@ -85,7 +85,7 @@ if __name__ == '__main__':
     except:
         print(f'model does not exist!')
     else:
-        cap = cv2.VideoCapture(0)
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
         if not cap.isOpened():
             print("Cannot open camera")
             exit()
@@ -104,14 +104,25 @@ if __name__ == '__main__':
                 # print(point.shape)
                 predictions = model.predict(point)
                 predicted_labels = np.argmax(predictions, axis=1)
+
                 cv2.putText(
                     img=draw_img,
                     text=str(categorical[predicted_labels[0]]),
-                    org=(10, 130),
+                    org=(10, 100),
                     fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=3,
-                    color=(255, 0, 0),
-                    thickness=5)
+                    color=(254, 254, 254),
+                    thickness=6)
+
+                cv2.putText(
+                    img=draw_img,
+                    text=str(categorical[predicted_labels[0]]),
+                    org=(10, 100),
+                    fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=3,
+                    color=(192, 255, 48),
+                    thickness=2,
+                    lineType=cv2.LINE_AA)
 
             cv2.imshow("", draw_img)
 

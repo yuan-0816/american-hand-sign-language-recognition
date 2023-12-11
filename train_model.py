@@ -59,8 +59,8 @@ if __name__=="__main__":
     except FileNotFoundError as e:
         print(f"Error: {e}")
 
-    train_data_path = './data/train_data.npy'
-    train_labels_path = './data/train_labels.npy'
+    train_data_path = 'datasets/data/train_data.npy'
+    train_labels_path = 'datasets/data/train_labels.npy'
     try:
         if not (os.path.isfile(train_data_path) and os.path.isfile(train_labels_path)):
             train_data, train_labels = load_data(point_data_folder_path)
@@ -69,8 +69,8 @@ if __name__=="__main__":
     except:
         pass
     else:
-        train_data = np.load('./data/train_data.npy')
-        train_labels = np.load('./data/train_labels.npy')
+        train_data = np.load('datasets/data/train_data.npy')
+        train_labels = np.load('datasets/data/train_labels.npy')
         train_labels = to_categorical(train_labels, num_classes=36)
 
         tf.random.set_seed(42)

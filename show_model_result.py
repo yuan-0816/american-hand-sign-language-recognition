@@ -35,8 +35,8 @@ class ShowResult:
         except FileNotFoundError as e:
             print(f"Error: {e}")
         else:
-            if not os.path.exists('result'):
-                os.makedirs('result')
+            if not os.path.exists('doc/result'):
+                os.makedirs('doc/result')
             history_df = pd.read_csv(path)
 
             fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
@@ -64,10 +64,10 @@ class ShowResult:
             plt.show()
 
     def show_confusion_matrix(self,  figsize=(10, 8), save_path=None):
-        if not os.path.exists('result'):
-            os.makedirs('result')
-        train_data = np.load('./data/train_data.npy')
-        train_labels = np.load('./data/train_labels.npy')
+        if not os.path.exists('doc/result'):
+            os.makedirs('doc/result')
+        train_data = np.load('datasets/data/train_data.npy')
+        train_labels = np.load('datasets/data/train_labels.npy')
 
         tf.random.set_seed(42)
 
@@ -112,6 +112,6 @@ if __name__ == '__main__':
     result = ShowResult(model_path)
     result.model_sumery()
     result.show_training_history('training_history/training_history.csv',
-                                 save_path='result/training_history.png')
+                                 save_path='doc/result/training_history.png')
     result.show_confusion_matrix(figsize=(10, 8),
-                                 save_path='result/confusion_matrix.png')
+                                 save_path='doc/result/confusion_matrix.png')
