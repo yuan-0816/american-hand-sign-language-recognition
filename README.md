@@ -71,6 +71,8 @@ we will use part of the PointNet model, because we will not care about things li
   <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/easy_pointnet.png" />
 </p>
 
+You can see the code at [point_net.py](https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/point_net.py) 
+
 
 ## Train model
 
@@ -92,9 +94,12 @@ The confusion matrix
   <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/result/confusion_matrix.png" />
 </p>
 
+## Pridect
+```commandline
+python3 predict.py  
+```
 
-
-
+By yuan :p
 
 
 
