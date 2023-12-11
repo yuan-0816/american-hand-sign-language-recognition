@@ -41,7 +41,7 @@ run```pip install -r requirements.txt```
 This is the American Sign Language dataset from Kaggle, consisting of a total of 36 categories, including numbers 0-9 and English letters A-Z.
 
 https://www.kaggle.com/datasets/ayuraj/asl-dataset/data
-[](https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/result/all_image.png)
+![](https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/result/all_image.png)
 
 
 put the image datasets in [datasets](https://github.com/yuan-0816/american-hand-sign-language-recognition/tree/main/datasets/data) folder
