@@ -1,6 +1,6 @@
 # American-Hand-Sign-language-Recognition
-This project is based on Edward Roe's work, as referenced in https://medium.com/@er_95882/asl-recognition-using-pointnet-and-mediapipe-f2efda78d089.   
-Many thanks to him for his contribution.
+This project is based on Edward Roe's work on [ASL recognition using PointNet and Mediapipe](https://medium.com/@er_95882/asl-recognition-using-pointnet-and-mediapipe-f2efda78d089)  
+Many thanks to him for his valuable contribution.
 
 ---
 
