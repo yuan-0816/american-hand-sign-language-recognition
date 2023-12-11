@@ -60,16 +60,41 @@ totaling 21 points, with each point containing [x, y, z] coordinates.
 
 You can find more details on [Mediapipe](https://developers.google.com/mediapipe/solutions/vision/hand_landmarker)  
 
-
-<p align="center">
-  <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/mediapipe_hand.png" />
-</p>
-
-
-
 <p align="center">
   <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/result/3D_point.gif" />
 </p>
+  
+## Model 
+we will use part of the PointNet model, because we will not care about things like unordered points or transformation invariance.  
+
+<p align="center">
+  <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/easy_pointnet.png" />
+</p>
+
+
+## Train model
+
+```commandline
+python3 train_model.py     
+```
+
+The trained model will be stored in the [model](https://github.com/yuan-0816/american-hand-sign-language-recognition/tree/main/model/ASL_Recognition.h5py) folder.
+
+The training history  
+
+<p align="center">
+  <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/result/training_history.png" />
+</p>
+
+The confusion matrix  
+
+<p align="center">
+  <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/result/confusion_matrix.png" />
+</p>
+
+
+
+
 
 
 
