@@ -4,8 +4,9 @@ Many thanks to him for his valuable contribution.
 
 ---
 
-![](https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/demo.gif)
-  
+<p align="center">
+  <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/demo.gif" />
+</p>
 
 ## File structure
 ```commandline
