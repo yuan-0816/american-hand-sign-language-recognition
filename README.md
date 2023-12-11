@@ -94,7 +94,7 @@ The confusion matrix
   <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/result/confusion_matrix.png" />
 </p>
 
-## Pridect
+## Predict
 ```commandline
 python3 predict.py  
 ```
