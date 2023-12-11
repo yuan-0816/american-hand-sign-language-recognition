@@ -56,7 +56,11 @@ python3 create_point_datasets.py
 ```
 the point cloud datasets will be stored in the [datasets](https://github.com/yuan-0816/american-hand-sign-language-recognition/tree/main/datasets/data) folder
 
-This involves using Mediapipe to detect hand keypoint coordinates, totaling 21 points, with each point containing [x, y, z] coordinates.
+This involves using Mediapipe to detect hand keypoint coordinates, 
+totaling 21 points, with each point containing [x, y, z] coordinates.  
+
+You can find more details on [Mediapipe](https://developers.google.com/mediapipe/solutions/vision/hand_landmarker)  
+
 
 <p align="center">
   <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/mediapipe_hand.png" />
