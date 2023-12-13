@@ -15,12 +15,13 @@ import numpy as np
 import cv2
 import mediapipe as mp
 import drawing_style as ds
+import copy
 
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 hands = mp_hands.Hands(
-    max_num_hands=1,
+    max_num_hands=2,
     min_detection_confidence=0.5,
     min_tracking_confidence=0.5)
 
@@ -31,18 +32,54 @@ categorical = ['0', '1', '2', '3', '4', '5',
                'o', 'p', 'q', 'r', 's', 't',
                'u', 'v', 'w', 'x', 'y', 'z']
 
+_CYAN = (192, 255, 48)
+_WHITE = (224, 224, 224)
+
+
+
+def calc_bounding_rect(image_width, image_height, landmarks):
+
+    landmark_array = np.empty((0, 2), int)
+
+    for _, landmark in enumerate(landmarks.landmark):
+        landmark_x = min(int(landmark.x * image_width), image_width - 1)
+        landmark_y = min(int(landmark.y * image_height), image_height - 1)
+
+        landmark_point = [np.array((landmark_x, landmark_y))]
+
+        landmark_array = np.append(landmark_array, landmark_point, axis=0)
+
+    x, y, w, h = cv2.boundingRect(landmark_array)
+
+    return [x, y, x + w, y + h]
+
+
+def draw_bounding_rect(use_brect, image, brect):
+    if use_brect:
+        # 外接矩形
+        cv2.rectangle(image, (brect[0], brect[1]), (brect[2], brect[3]),
+                     _CYAN, 3)
+    return image
+
 def get_hand_points(img):
 
     points = []
     results = hands.process(img)
 
     if results.multi_hand_landmarks:
-        for hand_landmarks in results.multi_hand_landmarks:
-            for i in range(21):
-                x = hand_landmarks.landmark[i].x
-                y = hand_landmarks.landmark[i].y
-                z = hand_landmarks.landmark[i].z
-                points.append([x, y, z])
+        for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
+            if (handedness.classification[0].label[0:]) == "Left":
+                for i in range(21):
+                    x = hand_landmarks.landmark[i].x
+                    y = hand_landmarks.landmark[i].y
+                    z = hand_landmarks.landmark[i].z
+                    points.append([x, y, z])
+            else:
+                for i in range(21):
+                    x = (-1)*hand_landmarks.landmark[i].x
+                    y = hand_landmarks.landmark[i].y
+                    z = hand_landmarks.landmark[i].z
+                    points.append([x, y, z])
 
             mp_drawing.draw_landmarks(
                 img,
@@ -78,6 +115,46 @@ def get_hand_points(img):
     return points_raw, img
 
 
+def test_hand(img):
+    points = []
+    results = hands.process(img)
+
+    if results.multi_hand_landmarks:
+
+        for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
+
+            if (handedness.classification[0].label[0:]) == "Left":
+                print('Left')
+
+        # a =  getattr(results, 'multi_hand_landmarks')
+        # b = getattr(results, 'multi_handedness')
+
+
+
+        # for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
+
+            #
+
+            # for i in range(21):
+            #     x = hand_landmarks.landmark[i].x
+            #     y = hand_landmarks.landmark[i].y
+            #     z = hand_landmarks.landmark[i].z
+            #     points.append([x, y, z])
+            #
+            # brect = calc_bounding_rect(image_width, image_height, hand_landmarks)
+            # img = draw_bounding_rect(True, img, brect)
+            #
+            # mp_drawing.draw_landmarks(
+            #     img,
+            #     hand_landmarks,
+            #     mp_hands.HAND_CONNECTIONS,
+            #     ds.get_default_hand_landmarks_style(),
+            #     ds.get_default_hand_connections_style()
+            # )
+
+
+
+
 
 if __name__ == '__main__':
     try:
@@ -90,14 +167,20 @@ if __name__ == '__main__':
             print("Cannot open camera")
             exit()
 
+        ret, frame = cap.read()
+        image_width, image_height = frame.shape[1], frame.shape[0]
+
         while (True):
             ret, frame = cap.read()
             if not ret:
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
 
+            frame = cv2.flip(frame, 1)
+
             point, draw_img = get_hand_points(frame)
-            draw_img = cv2.flip(draw_img, 1)
+
+            # draw_img = cv2.flip(draw_img, 1)
 
             if point is not None:
                 point = np.expand_dims(point, axis=0)
@@ -126,32 +209,10 @@ if __name__ == '__main__':
 
             cv2.imshow("", draw_img)
 
-            if cv2.waitKey(1) == ord('q') or cv2.waitKey(1) == 27:
+            if cv2.waitKey(1) == ord('q'):
                 break
 
         cap.release()
         cv2.destroyAllWindows()
 
-
-
-    # 讀取資料集預測
-    # dataset_root = "./point_datasets"
-    #
-    # subfolders = [f for f in os.listdir(dataset_root) if os.path.isdir(os.path.join(dataset_root, f))]
-    #
-    # for subfolder in subfolders:
-    #     folder_path = os.path.join(dataset_root, subfolder)
-    #     files = [f for f in os.listdir(folder_path) if f.endswith(".npy")]
-    #
-    #     if files:
-    #
-    #         random_file = np.random.choice(files)
-    #         file_path = os.path.join(folder_path, random_file)
-    #
-    #         data = np.load(file_path)
-    #         adjusted_data = np.expand_dims(data, axis=0)
-    #
-    #         predictions = model.predict(adjusted_data)
-    #         predicted_labels = np.argmax(predictions, axis=1)
-    #         print(categorical[predicted_labels[0]])
 
