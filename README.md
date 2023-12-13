@@ -5,8 +5,10 @@ Many thanks to him for his valuable contribution.
 ---
 
 <p align="center">
-  <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/demo.gif" />
+    <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/demo.gif" />
+    <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/demo2.gif" />
 </p>
+
 
 ## File structure
 ```commandline
@@ -29,10 +31,12 @@ hand_sign_language_recognition
 ├─create_point_datasets.py  (Generate point cloud datasets)
 ├─drawing_style.py          (The drawing style of Mediapipe)
 ├─point_net.py              (PointNet model)
-├─predict.py                (Prediction using a camera)
+├─predict.py                (Prediction of one-handed sign language)
+├─Hands_predict.py          (Prediction of two-handed sign language)
 ├─show_datasets.py          (Display the dataset)
 ├─show_model_result.py      (Display the model result)
-└─train_model.py            (Train model)
+├─train_model.py            (Train model)
+└─transforms_3d.py          (Transforming point cloud data)
 ```
 
 
