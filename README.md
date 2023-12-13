@@ -6,6 +6,7 @@ Many thanks to him for his valuable contribution.
 
 <p align="center">
     <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/demo.gif" />
+    <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/demo2.gif" />
 </p>
 <p align="center">
     <img src="https://github.com/yuan-0816/american-hand-sign-language-recognition/blob/main/doc/demo2.gif" />
