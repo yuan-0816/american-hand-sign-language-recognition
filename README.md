@@ -101,6 +101,26 @@ The confusion matrix
 ```commandline
 python3 predict.py  
 ```
+or 
+```commandline
+python3 Hands_predict.py
+```
+
+### cat :P
+
+```commandline
+　　 ＿＿＿
+    　　　　　／＞　　  フ
+    　　　　　|  　_　 _|
+    　 　　　／` ミ＿xノ
+    　　 　 /　　　 　 |
+    　　　 /　 ヽ　　 ﾉ
+    　 　 │　　|　|　|
+    　／￣|　　 |　|　|
+    　| (￣ヽ＿_ヽ_)__)
+    　＼二つ
+
+```
 
 By yuan :p
 
